@@ -1,2 +1,0 @@
-
-ALTER TABLE Ansiblex ADD source VARCHAR(255) NULL

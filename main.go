@@ -18,7 +18,7 @@ func main() {
 	r := mux.NewRouter()
 
 	// API endpoint for capital jump planner
-	p := capital.NewPlanner(capital.DefaultGraph())
+	p := capital.NewPlanner(capital.DefaultSystems(), capital.DefaultGraph())
 	r.HandleFunc("/api/capital", func(w http.ResponseWriter, r *http.Request) {
 		start := r.URL.Query().Get("start")
 		end := r.URL.Query().Get("end")

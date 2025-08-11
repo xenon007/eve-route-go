@@ -10,6 +10,7 @@ import Footer from './components/Footer';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import Admin from './pages/Admin';
+import Capital from './pages/Capital';
 import './App.css';
 import { ResponseAuthUser, ResponseMapConnections } from "./response";
 
@@ -64,6 +65,9 @@ class App extends React.Component<Props, AppState> {
                 { this.state.user.name === '' && <Login /> }
                 { this.state.user.name && this.state.page === 'Home' &&
                   <Home connectionChanged={this.connectionChanged} />
+                }
+                { this.state.user.name && this.state.page === 'Capital' &&
+                  <Capital />
                 }
                 { this.state.user.name && this.state.page === 'Admin' &&
                   <Admin connectionChanged={this.connectionChanged} />
@@ -172,7 +176,7 @@ const loadConnections = (app: App) => {
 };
 
 const getPage = (): string => {
-  const validPages = ['Home', 'Admin'];
+  const validPages = ['Home', 'Capital', 'Admin'];
   const params = window.location.hash.substring(1).split(';');
   if (validPages.indexOf(params[0]) !== -1) {
     return params[0];

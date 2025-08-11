@@ -4,6 +4,15 @@
     "change-language": "更改语言",
     "en-GB": "English",
     "ru-RU": "Русский",
-    "zh-CN": "中文"
+    "zh-CN": "中文",
+    "capital": "Capital",
+    "admin": "Admin"
+  },
+  "capital": {
+    "title": "Capital Jump Planner",
+    "start": "Start system",
+    "end": "End system",
+    "find": "Find",
+    "no-route": "No route"
   }
 }

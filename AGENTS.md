@@ -25,7 +25,7 @@
 - Дерево рабочей копии перед коммитом должно быть чистым.
 
 ## Задачи
-[_] Переписать код с Kotlin на Golang
+[ ] Переписать код с Kotlin на Golang
 - [x] add path distance calculator
 - [x] Add route planner translated from Kotlin
 - [x] add capital jump planner
@@ -33,7 +33,7 @@
 - [x] add development guidelines
 - [x] Implement capital jump planner with embedded system data
 - [x] Реализовать подсчёт общей дистанции маршрута для капитальных кораблей.
-- [_] Изучить код на Kotlin и написать задачи для рерайта на Golang
+- [ ] Изучить код на Kotlin и написать задачи для рерайта на Golang
 - [_] Добавить пакет для работы с EVE ESI для Golang
 - [_] Переписать функционал для авторизации
 - [_] Переписать функционал для подсчёта прыжков

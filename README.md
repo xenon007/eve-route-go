@@ -23,4 +23,4 @@ go build -o eve-route
 ./eve-route
 ```
 
-Сервер слушает порт `8080` и предоставляет API `/api/capital`.
+Сервер слушает порт `8080` и предоставляет API `/api/capital`. Веб-интерфейс Capital Jump Planner доступен по адресу `http://localhost:8080/#Capital`.

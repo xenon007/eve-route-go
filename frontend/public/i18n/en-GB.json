@@ -27,6 +27,7 @@
   },
   "header": {
     "admin": "Admin",
+    "capital": "Capital Planner",
     "no-alliance": "No alliance",
     "logout": "Logout",
     "change-language": "Change language",
@@ -73,6 +74,13 @@
     "find-route": "Find route",
     "set-route": "Set route",
     "no-route-found": "No route found."
+  },
+  "capital": {
+    "title": "Capital Jump Planner",
+    "start": "Start system",
+    "end": "End system",
+    "find": "Find jumps",
+    "no-route": "No route found."
   },
   "navModal": {
     "esi-update": "ESI Update",

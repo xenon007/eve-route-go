@@ -84,12 +84,18 @@ export default function Header(props: Props) {
               {t('app.name')}
             </Typography>
 
-            {globalData.user.name &&
-              <Button size="small" color="primary" disableRipple className={classes.toolbarButton}
-                      onClick={() => openPage('Admin')}>
-                {t('header.admin')}
-              </Button>
-            }
+            {globalData.user.name && (
+              <>
+                <Button size="small" color="primary" disableRipple className={classes.toolbarButton}
+                        onClick={() => openPage('Capital')}>
+                  {t('header.capital')}
+                </Button>
+                <Button size="small" color="primary" disableRipple className={classes.toolbarButton}
+                        onClick={() => openPage('Admin')}>
+                  {t('header.admin')}
+                </Button>
+              </>
+            )}
 
             <HeaderModalButtons connectionChanged={props.connectionChanged}/>
 

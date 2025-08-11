@@ -1,18 +1,17 @@
-/.gradle
-!/.gradle/.gitkeep
-/.idea
-/out
-/build
-*.iml
-*.ipr
-*.iws
+# Go build
+/eve-route
+/bin
 
-/.mongo
-/node_modules
-/resources/graph.json
-/resources/public/*
-!/resources/public/.gitkeep
-/notes.txt
-/sqlite.db
-/h2.mv.db
-/h2.trace.db
+# Node modules
+frontend/node_modules
+
+# Frontend build output
+/frontend/dist
+!/frontend/dist/.gitkeep
+
+# IDE
+.idea
+
+# Misc
+/out
+.DS_Store

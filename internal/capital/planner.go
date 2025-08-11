@@ -105,3 +105,17 @@ func distance(a, b System) float64 {
 	dz := a.Z - b.Z
 	return math.Sqrt(dx*dx+dy*dy+dz*dz) / lyInMeters
 }
+
+// PathDistance возвращает суммарное расстояние маршрута в световых годах.
+// Ожидает срез систем в порядке следования.
+func PathDistance(path []System) float64 {
+	if len(path) < 2 {
+		return 0
+	}
+	log.Printf("capital planner: calculating distance for %d jumps", len(path)-1)
+	var total float64
+	for i := 1; i < len(path); i++ {
+		total += distance(path[i-1], path[i])
+	}
+	return total
+}

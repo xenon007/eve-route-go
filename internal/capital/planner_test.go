@@ -3,10 +3,17 @@ package capital
 import (
 	"math"
 	"testing"
+
+	"github.com/tkhamez/eve-route-go/internal/db"
 )
 
 func TestPlan(t *testing.T) {
-	p := NewPlanner(DefaultSystems(), 5)
+	systems := DefaultSystems()
+	store := db.NewMemory(nil, nil, systems)
+	p, err := NewPlanner(store, 5)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
 	path, err := p.Plan("Maila", "Todifrauan")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -17,7 +24,12 @@ func TestPlan(t *testing.T) {
 }
 
 func TestPathDistance(t *testing.T) {
-	p := NewPlanner(DefaultSystems(), 5)
+	systems := DefaultSystems()
+	store := db.NewMemory(nil, nil, systems)
+	p, err := NewPlanner(store, 5)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
 	path, err := p.Plan("Maila", "Todifrauan")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)

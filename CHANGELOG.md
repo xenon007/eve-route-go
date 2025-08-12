@@ -5,6 +5,7 @@
 - Переписан сервер на Go.
 - Добавлен пример Capital Jump Planner.
 - Фронтенд встраивается в бинарник.
+- Обновлена документация по сборке и переменным окружения.
 
 ## 1.1.0
 
@@ -23,7 +24,7 @@
 2021-04-06
 
 - Fix: It was not possible to import gates from different regions at once.
-- Fix: A connection between two unconnected Ansiblex gates was incorrectly assumed when an Ansiblex 
+- Fix: A connection between two unconnected Ansiblex gates was incorrectly assumed when an Ansiblex
   gate existed in both systems.
 
 ## 0.8.1

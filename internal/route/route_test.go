@@ -1,13 +1,21 @@
 package route
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/tkhamez/eve-route-go/internal/db"
+)
 
 func TestRouteFindAnsiblex(t *testing.T) {
-	ansiblexes := []MongoAnsiblex{
+	ansiblexes := []db.Ansiblex{
 		{ID: 1, Name: "Alpha » Gamma - Gate1", SolarSystemID: 1},
 		{ID: 2, Name: "Gamma » Alpha - Gate2", SolarSystemID: 3},
 	}
-	r := NewRoute(ansiblexes, nil, nil, nil)
+	store := db.NewMemory(ansiblexes, nil, nil)
+	r, err := NewRoute(store, nil, nil)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
 	paths := r.Find("Alpha", "Gamma")
 	t.Logf("paths: %d", len(paths))
 	if len(paths) != 2 {

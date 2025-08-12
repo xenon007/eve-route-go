@@ -13,6 +13,12 @@
     "start": "Start system",
     "end": "End system",
     "find": "Find",
-    "no-route": "No route"
+    "no-route": "No route",
+    "validation-required": "Start and end system are required.",
+    "validation-same": "Start and end must be different.",
+    "system": "System",
+    "distance": "Distance (ly)",
+    "fuel": "Fuel",
+    "total-fuel": "Total fuel"
   }
 }

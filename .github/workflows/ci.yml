@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: go.mod
+          cache: true
+          cache-dependency-path: go.sum
+
+      - name: Go fmt
+        run: go fmt ./...
+
+      - name: Go test
+        run: go test ./...
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+          cache-dependency-path: frontend/yarn.lock
+
+      - name: Yarn install
+        working-directory: frontend
+        run: yarn install --immutable
+
+      - name: Yarn build
+        working-directory: frontend
+        env:
+          NODE_OPTIONS: --openssl-legacy-provider
+        run: yarn build

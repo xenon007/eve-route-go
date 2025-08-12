@@ -9,12 +9,18 @@ import (
 	"github.com/gorilla/mux"
 
 	"github.com/tkhamez/eve-route-go/internal/capital"
+	"github.com/tkhamez/eve-route-go/internal/config"
 )
 
 //go:embed frontend/dist
 var frontendFS embed.FS
 
 func main() {
+	cfg := config.FromEnv()
+	if cfg.DatabaseURL == "" {
+		log.Println("DATABASE_URL is not set")
+	}
+
 	r := mux.NewRouter()
 
 	// API endpoint for capital jump planner
@@ -37,6 +43,7 @@ func main() {
 	// serve static frontend
 	r.PathPrefix("/").Handler(http.FileServer(http.FS(frontendFS)))
 
-	log.Println("server started on :8080")
-	log.Fatal(http.ListenAndServe(":8080", r))
+	addr := ":" + cfg.Port
+	log.Printf("server started on %s", addr)
+	log.Fatal(http.ListenAndServe(addr, r))
 }

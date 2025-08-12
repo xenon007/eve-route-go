@@ -63,11 +63,13 @@ func main() {
 		start := r.URL.Query().Get("start")
 		end := r.URL.Query().Get("end")
 		if start == "" || end == "" {
+			log.Printf("capital api: missing start or end (start=%q end=%q)", start, end)
 			http.Error(w, "missing start or end", http.StatusBadRequest)
 			return
 		}
 		path, err := p.Plan(start, end)
 		if err != nil {
+			log.Printf("capital api: %v", err)
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}

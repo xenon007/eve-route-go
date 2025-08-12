@@ -5,9 +5,12 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 
+	"github.com/gorilla/csrf"
 	"github.com/gorilla/mux"
 
+	"github.com/tkhamez/eve-route-go/internal/auth"
 	"github.com/tkhamez/eve-route-go/internal/capital"
 )
 
@@ -16,6 +19,9 @@ var frontendFS embed.FS
 
 func main() {
 	r := mux.NewRouter()
+
+	// initialize session manager
+	_ = auth.NewManager()
 
 	// API endpoint for capital jump planner
 	p := capital.NewPlanner(capital.DefaultSystems(), 5)
@@ -37,6 +43,9 @@ func main() {
 	// serve static frontend
 	r.PathPrefix("/").Handler(http.FileServer(http.FS(frontendFS)))
 
+	csrfKey := os.Getenv("CSRF_KEY")
+	csrfMiddleware := csrf.Protect([]byte(csrfKey), csrf.Secure(false))
+
 	log.Println("server started on :8080")
-	log.Fatal(http.ListenAndServe(":8080", r))
+	log.Fatal(http.ListenAndServe(":8080", csrfMiddleware(r)))
 }

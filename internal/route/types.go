@@ -1,20 +1,15 @@
 package route
 
-import "github.com/tkhamez/eve-route-go/internal/graph"
+import (
+	"github.com/tkhamez/eve-route-go/internal/db"
+	"github.com/tkhamez/eve-route-go/internal/graph"
+)
 
-// MongoAnsiblex описывает Ansiblex-ворота.
-type MongoAnsiblex struct {
-	ID            int64
-	Name          string
-	SolarSystemID int
-	RegionID      *int
-}
+// Ansiblex описывает Ansiblex-ворота.
+type Ansiblex = db.Ansiblex
 
-// MongoTemporaryConnection описывает временное соединение между системами.
-type MongoTemporaryConnection struct {
-	System1ID int
-	System2ID int
-}
+// TemporaryConnection описывает временное соединение между системами.
+type TemporaryConnection = db.TemporaryConnection
 
 // ConnectedSystems — пара систем, связь между которыми удалена пользователем.
 type ConnectedSystems struct {

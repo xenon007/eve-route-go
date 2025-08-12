@@ -1,13 +1,17 @@
 package main
 
 import (
+	"database/sql"
 	"embed"
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
+	"golang.org/x/oauth2"
 
+	"github.com/tkhamez/eve-route-go/internal/auth"
 	"github.com/tkhamez/eve-route-go/internal/capital"
 )
 
@@ -15,7 +19,30 @@ import (
 var frontendFS embed.FS
 
 func main() {
+	db, err := sql.Open("sqlite", "tokens.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+	store, err := auth.NewTokenStore(db)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	conf := &oauth2.Config{
+		ClientID:     os.Getenv("OAUTH_CLIENT_ID"),
+		ClientSecret: os.Getenv("OAUTH_CLIENT_SECRET"),
+		RedirectURL:  "http://localhost:8080/callback",
+		Endpoint: oauth2.Endpoint{
+			AuthURL:  "https://login.eveonline.com/v2/oauth/authorize",
+			TokenURL: "https://login.eveonline.com/v2/oauth/token",
+		},
+	}
+	h := auth.NewHandler(conf, store)
+
 	r := mux.NewRouter()
+	r.HandleFunc("/login", h.Login).Methods("GET")
+	r.HandleFunc("/callback", h.Callback).Methods("GET")
 
 	// API endpoint for capital jump planner
 	p := capital.NewPlanner(capital.DefaultSystems(), 5)

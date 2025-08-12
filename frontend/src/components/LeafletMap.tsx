@@ -1,19 +1,12 @@
 import React, { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { CapitalSystem } from "../response";
-
-// Props задаёт список систем для отрисовки маршрута.
-type Props = {
-  systems: CapitalSystem[];
-};
-
 /**
  * LeafletMap отображает маршрут капитальных прыжков на карте Leaflet.
  */
-export default function LeafletMap({ systems }: Props) {
-  const mapRef = useRef<HTMLDivElement>(null);
-  const mapInst = useRef<L.Map>();
+export default function LeafletMap({ systems }: { systems: any[] }) {
+  const mapRef = useRef(null);
+  const mapInst = useRef(null);
 
   // Инициализация карты один раз после монтирования.
   useEffect(() => {
@@ -43,9 +36,7 @@ export default function LeafletMap({ systems }: Props) {
     }
     console.info("Drawing route with", systems.length, "systems");
     const scale = 1e16; // перевод метров в условные градусы
-    const coords = systems.map(
-      (s) => [s.y / scale, s.x / scale] as [number, number],
-    );
+    const coords = systems.map((s) => [s.y / scale, s.x / scale]);
     const polyline = L.polyline(coords, { color: "red" }).addTo(map);
     map.fitBounds(polyline.getBounds());
   }, [systems]);

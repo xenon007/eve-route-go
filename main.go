@@ -13,8 +13,6 @@ import (
 
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/mux"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"golang.org/x/oauth2"
 
 	"github.com/tkhamez/eve-route-go/internal/api"
@@ -22,6 +20,7 @@ import (
 	"github.com/tkhamez/eve-route-go/internal/capital"
 	"github.com/tkhamez/eve-route-go/internal/config"
 	"github.com/tkhamez/eve-route-go/internal/db"
+	dbstore "github.com/tkhamez/eve-route-go/internal/dbstore"
 	routepkg "github.com/tkhamez/eve-route-go/internal/route"
 )
 
@@ -38,50 +37,32 @@ func mustEnv(key string) string {
 }
 
 // initStore инициализирует хранилище данных на основе DATABASE_URL.
-func initStore(ctx context.Context, urlStr string) db.Store {
+func initStore(ctx context.Context, urlStr string) dbstore.Store {
 	if urlStr == "" {
 		log.Println("DATABASE_URL not set, using in-memory store")
-		return db.NewMemory(nil, nil, capital.DefaultSystems())
+		return dbstore.NewMemory(nil, nil, capital.DefaultSystems())
 	}
 	u, err := url.Parse(urlStr)
 	if err != nil {
 		log.Printf("invalid DATABASE_URL %q: %v; using in-memory store", urlStr, err)
-		return db.NewMemory(nil, nil, capital.DefaultSystems())
+		return dbstore.NewMemory(nil, nil, capital.DefaultSystems())
 	}
 	switch u.Scheme {
-	case "postgres", "postgresql":
-		conn, err := sql.Open("postgres", urlStr)
-		if err != nil {
-			log.Printf("postgres connection error: %v; using in-memory store", err)
-			return db.NewMemory(nil, nil, capital.DefaultSystems())
-		}
-		return db.NewPostgres(conn)
-	case "mongodb", "mongo":
-		client, err := mongo.Connect(ctx, options.Client().ApplyURI(urlStr))
-		if err != nil {
-			log.Printf("mongo connection error: %v; using in-memory store", err)
-			return db.NewMemory(nil, nil, capital.DefaultSystems())
-		}
-		dbName := strings.TrimPrefix(u.Path, "/")
-		if dbName == "" {
-			dbName = "eve"
-		}
-		return db.NewMongo(client, dbName)
 	case "sqlite":
 		path := strings.TrimPrefix(u.Path, "/")
 		if path == "" {
 			log.Println("sqlite DATABASE_URL missing path, using in-memory store")
-			return db.NewMemory(nil, nil, capital.DefaultSystems())
+			return dbstore.NewMemory(nil, nil, capital.DefaultSystems())
 		}
 		conn, err := sql.Open("sqlite", path)
 		if err != nil {
 			log.Printf("sqlite connection error: %v; using in-memory store", err)
-			return db.NewMemory(nil, nil, capital.DefaultSystems())
+			return dbstore.NewMemory(nil, nil, capital.DefaultSystems())
 		}
 		return db.NewSQLite(conn)
 	default:
 		log.Printf("unsupported DATABASE_URL scheme %q, using in-memory store", u.Scheme)
-		return db.NewMemory(nil, nil, capital.DefaultSystems())
+		return dbstore.NewMemory(nil, nil, capital.DefaultSystems())
 	}
 }
 

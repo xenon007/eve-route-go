@@ -69,6 +69,7 @@ export type ResponseRouteLocation = {
 export type CapitalSystem = {
   id: number;
   name: string;
+  regionName?: string;
   x: number;
   y: number;
   z: number;

@@ -11,6 +11,9 @@ import (
 	"github.com/gorilla/mux"
 	"golang.org/x/oauth2"
 
+	"github.com/tkhamez/eve-route-go/internal/api"
+	"github.com/tkhamez/eve-route-go/internal/capital"
+	routepkg "github.com/tkhamez/eve-route-go/internal/route"
 	"github.com/tkhamez/eve-route-go/internal/auth"
 	"github.com/tkhamez/eve-route-go/internal/capital"
 	"github.com/tkhamez/eve-route-go/internal/db"
@@ -75,6 +78,10 @@ func main() {
 		}
 		_ = json.NewEncoder(w).Encode(map[string]any{"route": path})
 	}).Methods("GET")
+
+	// API endpoint for route planner
+	rp := routepkg.NewRoute(nil, nil, nil, nil)
+	r.HandleFunc("/api/route/{from}/{to}", api.NewRouteHandler(rp)).Methods("GET")
 
 	// serve static frontend
 	r.PathPrefix("/").Handler(http.FileServer(http.FS(frontendFS)))

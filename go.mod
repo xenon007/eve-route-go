@@ -1,12 +1,12 @@
 module github.com/tkhamez/eve-route-go
 
-go 1.23.0
-
-toolchain go1.24.3
+go 1.23
 
 require (
 	github.com/antihax/goesi v0.0.0-20250326124837-837c9408dfa4
+	github.com/gorilla/csrf v1.7.3
 	github.com/gorilla/mux v1.8.1
+	github.com/gorilla/sessions v1.4.0
 	github.com/lib/pq v1.10.9
 	go.mongodb.org/mongo-driver v1.17.4
 	golang.org/x/oauth2 v0.0.0-20211028175245-ba495a64dcb5
@@ -17,6 +17,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/golang-jwt/jwt/v4 v4.1.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/gorilla/securecookie v1.1.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect

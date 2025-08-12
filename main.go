@@ -8,9 +8,11 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gorilla/csrf"
 	"github.com/gorilla/mux"
 	"golang.org/x/oauth2"
 
+	"github.com/tkhamez/eve-route-go/internal/auth"
 	"github.com/tkhamez/eve-route-go/internal/api"
 	"github.com/tkhamez/eve-route-go/internal/capital"
 	routepkg "github.com/tkhamez/eve-route-go/internal/route"
@@ -58,6 +60,9 @@ func main() {
 
 	api.RegisterAnsiblexRoutes(r, "secret")
 
+	// initialize session manager
+	_ = auth.NewManager()
+
 	// API endpoint for capital jump planner
 	store := db.NewMemory(nil, nil, capital.DefaultSystems())
 	p, err := capital.NewPlanner(store, 5)
@@ -88,6 +93,11 @@ func main() {
 	// serve static frontend
 	r.PathPrefix("/").Handler(http.FileServer(http.FS(frontendFS)))
 
+	csrfKey := os.Getenv("CSRF_KEY")
+	csrfMiddleware := csrf.Protect([]byte(csrfKey), csrf.Secure(false))
+
+	log.Println("server started on :8080")
+	log.Fatal(http.ListenAndServe(":8080", csrfMiddleware(r)))
 	addr := ":" + cfg.Port
 	log.Printf("server started on %s", addr)
 	log.Fatal(http.ListenAndServe(addr, r))

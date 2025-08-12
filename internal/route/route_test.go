@@ -6,6 +6,7 @@ import (
 	"github.com/tkhamez/eve-route-go/internal/db"
 )
 
+// TestRouteFindAnsiblex проверяет, что Ansiblex рассматривается как альтернативный маршрут.
 func TestRouteFindAnsiblex(t *testing.T) {
 	ansiblexes := []db.Ansiblex{
 		{ID: 1, Name: "Alpha » Gamma - Gate1", SolarSystemID: 1},
@@ -26,5 +27,28 @@ func TestRouteFindAnsiblex(t *testing.T) {
 	}
 	if paths[1][0].ConnectionType == nil || *paths[1][0].ConnectionType != TypeAnsiblex {
 		t.Fatalf("второй маршрут должен использовать Ansiblex")
+	}
+}
+
+// TestRouteSortTemporary проверяет сортировку по количеству временных соединений.
+func TestRouteSortTemporary(t *testing.T) {
+	temps := []db.TemporaryConnection{
+		{System1ID: 1, System2ID: 3},
+	}
+	removed := []ConnectedSystems{{System1: "Alpha", System2: "Gamma"}}
+	store := db.NewMemory(nil, temps, nil)
+	r, err := NewRoute(store, nil, removed)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	paths := r.Find("Alpha", "Gamma")
+	if len(paths) != 2 {
+		t.Fatalf("ожидались два маршрута, получено %d", len(paths))
+	}
+	if paths[0][0].ConnectionType == nil || *paths[0][0].ConnectionType != TypeStargate {
+		t.Fatalf("первый маршрут должен идти через Stargate")
+	}
+	if paths[1][0].ConnectionType == nil || *paths[1][0].ConnectionType != TypeTemporary {
+		t.Fatalf("второй маршрут должен использовать временное соединение")
 	}
 }

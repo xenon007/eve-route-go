@@ -51,3 +51,14 @@ func (p path) numberOfAnsiblexes() int {
 	}
 	return count
 }
+
+// numberOfTemporary возвращает количество переходов через временные соединения.
+func (p path) numberOfTemporary() int {
+	count := 0
+	for _, w := range p.waypoints {
+		if w.ConnectionType != nil && *w.ConnectionType == TypeTemporary {
+			count++
+		}
+	}
+	return count
+}

@@ -12,33 +12,30 @@ import (
 	"github.com/gorilla/mux"
 	"golang.org/x/oauth2"
 
-	"github.com/tkhamez/eve-route-go/internal/auth"
 	"github.com/tkhamez/eve-route-go/internal/api"
-	"github.com/tkhamez/eve-route-go/internal/capital"
-	routepkg "github.com/tkhamez/eve-route-go/internal/route"
 	"github.com/tkhamez/eve-route-go/internal/auth"
 	"github.com/tkhamez/eve-route-go/internal/capital"
-	"github.com/tkhamez/eve-route-go/internal/db"
 	"github.com/tkhamez/eve-route-go/internal/config"
+	"github.com/tkhamez/eve-route-go/internal/db"
+	routepkg "github.com/tkhamez/eve-route-go/internal/route"
 )
 
 //go:embed frontend/dist
 var frontendFS embed.FS
 
 func main() {
-  
+
 	cfg := config.FromEnv()
 	if cfg.DatabaseURL == "" {
 		log.Println("DATABASE_URL is not set")
 	}
-  
-  
-	db, err := sql.Open("sqlite", "tokens.db")
+
+	tokenDB, err := sql.Open("sqlite", "tokens.db")
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
-	store, err := auth.NewTokenStore(db)
+	defer tokenDB.Close()
+	store, err := auth.NewTokenStore(tokenDB)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -52,20 +49,21 @@ func main() {
 			TokenURL: "https://login.eveonline.com/v2/oauth/token",
 		},
 	}
-  h := auth.NewHandler(conf, store)
+	h := auth.NewHandler(conf, store)
 
 	r := mux.NewRouter()
 	r.HandleFunc("/login", h.Login).Methods("GET")
 	r.HandleFunc("/callback", h.Callback).Methods("GET")
 
-	api.RegisterAnsiblexRoutes(r, "secret")
+	ansStore := db.NewMemory(nil, nil, nil)
+	api.RegisterAnsiblexRoutes(r, "secret", ansStore)
 
 	// initialize session manager
 	_ = auth.NewManager()
 
 	// API endpoint for capital jump planner
-	store := db.NewMemory(nil, nil, capital.DefaultSystems())
-	p, err := capital.NewPlanner(store, 5)
+	capStore := db.NewMemory(nil, nil, capital.DefaultSystems())
+	p, err := capital.NewPlanner(capStore, 5)
 	if err != nil {
 		log.Fatalf("cannot create planner: %v", err)
 	}
@@ -87,7 +85,8 @@ func main() {
 	}).Methods("GET")
 
 	// API endpoint for route planner
-	rp := routepkg.NewRoute(nil, nil, nil, nil)
+	routeStore := db.NewMemory(nil, nil, nil)
+	rp, _ := routepkg.NewRoute(routeStore, nil, nil)
 	r.HandleFunc("/api/route/{from}/{to}", api.NewRouteHandler(rp)).Methods("GET")
 
 	// serve static frontend

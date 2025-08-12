@@ -7,11 +7,12 @@ import (
 	"testing"
 
 	"github.com/gorilla/mux"
+	"github.com/tkhamez/eve-route-go/internal/db"
 	routepkg "github.com/tkhamez/eve-route-go/internal/route"
 )
 
 func TestNewRouteHandler(t *testing.T) {
-	planner := routepkg.NewRoute(nil, nil, nil, nil)
+	planner, _ := routepkg.NewRoute(db.NewMemory(nil, nil, nil), nil, nil)
 	router := mux.NewRouter()
 	router.HandleFunc("/api/route/{from}/{to}", NewRouteHandler(planner)).Methods("GET")
 
@@ -42,7 +43,7 @@ func TestNewRouteHandler(t *testing.T) {
 }
 
 func TestNewRouteHandlerNotFound(t *testing.T) {
-	planner := routepkg.NewRoute(nil, nil, nil, nil)
+	planner, _ := routepkg.NewRoute(db.NewMemory(nil, nil, nil), nil, nil)
 	router := mux.NewRouter()
 	router.HandleFunc("/api/route/{from}/{to}", NewRouteHandler(planner)).Methods("GET")
 

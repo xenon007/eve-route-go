@@ -35,9 +35,8 @@ func TestRouteSortTemporary(t *testing.T) {
 	temps := []db.TemporaryConnection{
 		{System1ID: 1, System2ID: 3},
 	}
-	removed := []ConnectedSystems{{System1: "Alpha", System2: "Gamma"}}
 	store := db.NewMemory(nil, temps, nil)
-	r, err := NewRoute(store, nil, removed)
+	r, err := NewRoute(store, nil, nil)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}

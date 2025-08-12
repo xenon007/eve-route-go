@@ -6,14 +6,18 @@
 
 Требуются Go 1.21 и Node.js 20.
 
+### Фронтенд
+
 ```bash
-# сборка фронтенда
 cd frontend
 yarn install
-yarn build
+NODE_OPTIONS=--openssl-legacy-provider yarn build
 cd ..
+```
 
-# сборка бинарника с вшитым фронтендом
+### Бэкенд
+
+```bash
 go build -o eve-route
 ```
 
@@ -24,3 +28,10 @@ go build -o eve-route
 ```
 
 Сервер слушает порт `8080` и предоставляет API `/api/capital`. Веб-интерфейс Capital Jump Planner доступен по адресу `http://localhost:8080/#Capital`.
+
+## Переменные окружения
+
+| Переменная     | Описание                          | Значение по умолчанию       |
+| -------------- | --------------------------------- | --------------------------- |
+| `NODE_OPTIONS` | используется при сборке фронтенда | `--openssl-legacy-provider` |
+| `PORT`         | порт HTTP-сервера                 | `8080`                      |

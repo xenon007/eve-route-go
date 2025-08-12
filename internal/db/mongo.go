@@ -6,6 +6,9 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+
+	"github.com/tkhamez/eve-route-go/internal/graph"
 )
 
 // Mongo implements Store using MongoDB.
@@ -78,6 +81,22 @@ func (m *Mongo) Systems(ctx context.Context) (map[int]System, error) {
 		return nil, err
 	}
 	return systems, nil
+}
+
+// Graph loads the universe graph from MongoDB.
+func (m *Mongo) Graph(ctx context.Context) (graph.Graph, error) {
+	var g graph.Graph
+	err := m.collection("graph").FindOne(ctx, bson.D{}).Decode(&g)
+	if err == mongo.ErrNoDocuments {
+		return graph.Graph{}, nil
+	}
+	return g, err
+}
+
+// SaveGraph stores the universe graph in MongoDB.
+func (m *Mongo) SaveGraph(ctx context.Context, g graph.Graph) error {
+	_, err := m.collection("graph").ReplaceOne(ctx, bson.D{}, g, options.Replace().SetUpsert(true))
+	return err
 }
 
 // EnsureMongoConnection pings the database to check connection.

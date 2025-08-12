@@ -22,8 +22,7 @@ type Route struct {
 }
 
 // NewRoute создаёт новый экземпляр маршрутизатора и загружает данные из хранилища.
-func NewRoute(store db.Store, avoided map[int]bool, removed []ConnectedSystems) (*Route, error) {
-	g := graph.DefaultGraph()
+func NewRoute(store db.Store, g graph.Graph, avoided map[int]bool, removed []ConnectedSystems) (*Route, error) {
 	helper := graph.NewHelper(g)
 	r := &Route{
 		graphHelper:             helper,

@@ -1,6 +1,10 @@
 package db
 
-import "context"
+import (
+	"context"
+
+	"github.com/tkhamez/eve-route-go/internal/graph"
+)
 
 // Ansiblex represents Ansiblex gate data.
 type Ansiblex struct {
@@ -30,4 +34,6 @@ type Store interface {
 	Ansiblexes(ctx context.Context) ([]Ansiblex, error)
 	TemporaryConnections(ctx context.Context) ([]TemporaryConnection, error)
 	Systems(ctx context.Context) (map[int]System, error)
+	Graph(ctx context.Context) (graph.Graph, error)
+	SaveGraph(ctx context.Context, g graph.Graph) error
 }

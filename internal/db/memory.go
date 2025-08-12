@@ -1,12 +1,17 @@
 package db
 
-import "context"
+import (
+	"context"
+
+	"github.com/tkhamez/eve-route-go/internal/graph"
+)
 
 // Memory provides an in-memory implementation of Store for tests.
 type Memory struct {
 	ansiblexes      []Ansiblex
 	tempConnections []TemporaryConnection
 	systems         map[int]System
+	graph           graph.Graph
 }
 
 // NewMemory creates a new in-memory store instance.
@@ -36,4 +41,15 @@ func (m *Memory) TemporaryConnections(ctx context.Context) ([]TemporaryConnectio
 // Systems returns capital systems information.
 func (m *Memory) Systems(ctx context.Context) (map[int]System, error) {
 	return m.systems, nil
+}
+
+// Graph returns the stored universe graph.
+func (m *Memory) Graph(ctx context.Context) (graph.Graph, error) {
+	return m.graph, nil
+}
+
+// SaveGraph stores the universe graph in memory.
+func (m *Memory) SaveGraph(ctx context.Context, g graph.Graph) error {
+	m.graph = g
+	return nil
 }

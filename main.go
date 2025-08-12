@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/mux"
 
 	"github.com/tkhamez/eve-route-go/internal/capital"
+	"github.com/tkhamez/eve-route-go/internal/db"
 )
 
 //go:embed frontend/dist
@@ -18,7 +19,11 @@ func main() {
 	r := mux.NewRouter()
 
 	// API endpoint for capital jump planner
-	p := capital.NewPlanner(capital.DefaultSystems(), 5)
+	store := db.NewMemory(nil, nil, capital.DefaultSystems())
+	p, err := capital.NewPlanner(store, 5)
+	if err != nil {
+		log.Fatalf("cannot create planner: %v", err)
+	}
 	r.HandleFunc("/api/capital", func(w http.ResponseWriter, r *http.Request) {
 		start := r.URL.Query().Get("start")
 		end := r.URL.Query().Get("end")

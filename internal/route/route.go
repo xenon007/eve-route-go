@@ -1,9 +1,12 @@
 package route
 
 import (
-	"github.com/tkhamez/eve-route-go/internal/graph"
+	"context"
 	"log"
 	"sort"
+
+	"github.com/tkhamez/eve-route-go/internal/db"
+	"github.com/tkhamez/eve-route-go/internal/graph"
 )
 
 // Route ищет пути между системами на основании графа.
@@ -14,12 +17,12 @@ type Route struct {
 
 	allSystems              map[int]GraphSystem
 	allNodes                map[int]*Node
-	allAnsiblexes           map[int]MongoAnsiblex
-	allTemporaryConnections map[int]MongoTemporaryConnection
+	allAnsiblexes           map[int]Ansiblex
+	allTemporaryConnections map[int]TemporaryConnection
 }
 
-// NewRoute создаёт новый экземпляр маршрутизатора.
-func NewRoute(ansiblexes []MongoAnsiblex, tempConnections []MongoTemporaryConnection, avoided map[int]bool, removed []ConnectedSystems) *Route {
+// NewRoute создаёт новый экземпляр маршрутизатора и загружает данные из хранилища.
+func NewRoute(store db.Store, avoided map[int]bool, removed []ConnectedSystems) (*Route, error) {
 	g := graph.DefaultGraph()
 	helper := graph.NewHelper(g)
 	r := &Route{
@@ -28,13 +31,21 @@ func NewRoute(ansiblexes []MongoAnsiblex, tempConnections []MongoTemporaryConnec
 		removedConnections:      removed,
 		allSystems:              map[int]GraphSystem{},
 		allNodes:                map[int]*Node{},
-		allAnsiblexes:           map[int]MongoAnsiblex{},
-		allTemporaryConnections: map[int]MongoTemporaryConnection{},
+		allAnsiblexes:           map[int]Ansiblex{},
+		allTemporaryConnections: map[int]TemporaryConnection{},
 	}
 	r.buildNodes()
+	ansiblexes, err := store.Ansiblexes(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	tempConnections, err := store.TemporaryConnections(context.Background())
+	if err != nil {
+		return nil, err
+	}
 	r.addGates(ansiblexes)
 	r.addTempConnections(tempConnections)
-	return r
+	return r, nil
 }
 
 // Find ищет пути от from до to. Возвращает список маршрутов с набором точек.
@@ -80,7 +91,7 @@ func (r *Route) buildNodes() {
 	}
 }
 
-func (r *Route) addGates(ansiblexes []MongoAnsiblex) {
+func (r *Route) addGates(ansiblexes []Ansiblex) {
 	for _, gate := range ansiblexes {
 		r.allAnsiblexes[gate.SolarSystemID] = gate
 		end := r.graphHelper.GetEndSystem(gate.Name)
@@ -95,7 +106,7 @@ func (r *Route) addGates(ansiblexes []MongoAnsiblex) {
 	}
 }
 
-func (r *Route) addTempConnections(conns []MongoTemporaryConnection) {
+func (r *Route) addTempConnections(conns []TemporaryConnection) {
 	for _, c := range conns {
 		r.allTemporaryConnections[c.System1ID] = c
 		r.allTemporaryConnections[c.System2ID] = c

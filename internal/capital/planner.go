@@ -2,22 +2,19 @@ package capital
 
 import (
 	"container/list"
+	"context"
 	"errors"
 	"log"
 	"math"
+
+	"github.com/tkhamez/eve-route-go/internal/db"
 )
 
 // lyInMeters — количество метров в одном световом годе.
 const lyInMeters = 9.4607e15
 
 // System описывает солнечную систему для капитального маршрута.
-type System struct {
-	ID   int     `json:"id"`
-	Name string  `json:"name"`
-	X    float64 `json:"x"`
-	Y    float64 `json:"y"`
-	Z    float64 `json:"z"`
-}
+type System = db.System
 
 // Planner рассчитывает маршрут прыжков капитальных кораблей.
 // Для поиска используется BFS, соседи вычисляются по радиусу прыжка.
@@ -27,13 +24,17 @@ type Planner struct {
 	jumpRange float64 // в световых годах
 }
 
-// NewPlanner создаёт новый планировщик на основе списка систем и радиуса прыжка.
-func NewPlanner(systems map[int]System, jumpRange float64) *Planner {
+// NewPlanner создаёт новый планировщик, загружая данные из хранилища.
+func NewPlanner(store db.Store, jumpRange float64) (*Planner, error) {
+	systems, err := store.Systems(context.Background())
+	if err != nil {
+		return nil, err
+	}
 	nameToID := map[string]int{}
 	for id, s := range systems {
 		nameToID[s.Name] = id
 	}
-	return &Planner{systems: systems, nameToID: nameToID, jumpRange: jumpRange}
+	return &Planner{systems: systems, nameToID: nameToID, jumpRange: jumpRange}, nil
 }
 
 // Plan ищет кратчайший маршрут между системами startName и endName.

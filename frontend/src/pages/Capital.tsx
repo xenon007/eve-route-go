@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import axios from "axios";
 import SystemInput from "../components/SystemInput";
 import LeafletMap from "../components/LeafletMap";
+import JumpTable from "../components/JumpTable";
 import { GlobalDataContext } from "../GlobalDataContext";
 import { CapitalSystem, ResponseCapital } from "../response";
 
@@ -19,7 +20,6 @@ export default function Capital() {
   const [end, setEnd] = useState("");
 
   const [route, setRoute] = useState<CapitalSystem[]>([]);
-  const [names, setNames] = useState<string[]>([]);
   const [message, setMessage] = useState("");
 
   const findRoute = () => {
@@ -29,10 +29,8 @@ export default function Capital() {
         `${globalData.domain}/api/capital?start=${start}&end=${end}`,
       )
       .then((r) => {
-
         console.info("Received capital route", r.data.route);
         setRoute(r.data.route);
-        setNames(r.data.route.map((s) => s.name));
       })
       .catch(() => {
         setMessage(t("capital.no-route"));
@@ -87,7 +85,7 @@ export default function Capital() {
 
       <Grid item sm={4} xs={12}>
         {message && <Typography>{message}</Typography>}
-        {!message && <JumpTable systems={systems} />}
+        {!message && <JumpTable systems={route} />}
       </Grid>
       <Grid item sm={8} xs={12}>
         <LeafletMap systems={route} />

@@ -15,6 +15,7 @@ const LY_IN_METERS = 9.4607e15;
 interface System {
   id: number;
   name: string;
+  regionName?: string;
   x: number;
   y: number;
   z: number;
@@ -37,6 +38,7 @@ export default function JumpTable({ systems }: { systems: System[] }) {
     const distance = Math.sqrt(dx * dx + dy * dy + dz * dz) / LY_IN_METERS;
     return {
       system: s.name,
+      region: s.regionName || "",
       distance,
       fuel: distance * FUEL_PER_LY,
     };
@@ -50,6 +52,7 @@ export default function JumpTable({ systems }: { systems: System[] }) {
         <TableHead>
           <TableRow>
             <TableCell>{t("capital.system")}</TableCell>
+            <TableCell>{t("capital.region")}</TableCell>
             <TableCell>{t("capital.distance")}</TableCell>
             <TableCell>{t("capital.fuel")}</TableCell>
           </TableRow>
@@ -58,6 +61,7 @@ export default function JumpTable({ systems }: { systems: System[] }) {
           {rows.map((r, i) => (
             <TableRow key={i}>
               <TableCell>{r.system}</TableCell>
+              <TableCell>{r.region}</TableCell>
               <TableCell>{r.distance.toFixed(2)}</TableCell>
               <TableCell>{Math.round(r.fuel)}</TableCell>
             </TableRow>

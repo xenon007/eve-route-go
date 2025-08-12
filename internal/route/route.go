@@ -67,7 +67,12 @@ func (r *Route) Find(from, to string) [][]Waypoint {
 		paths = append(paths, path{waypoints: wp})
 	}
 	sort.Slice(paths, func(i, j int) bool {
-		return paths[i].numberOfAnsiblexes() < paths[j].numberOfAnsiblexes()
+		ai := paths[i].numberOfAnsiblexes()
+		aj := paths[j].numberOfAnsiblexes()
+		if ai == aj {
+			return paths[i].numberOfTemporary() < paths[j].numberOfTemporary()
+		}
+		return ai < aj
 	})
 	var result [][]Waypoint
 	for _, p := range paths {

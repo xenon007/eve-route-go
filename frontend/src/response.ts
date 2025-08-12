@@ -6,110 +6,124 @@
  * Contains a translation key from the "responseCode" group.
  */
 export type ResponseMessage = {
-  code: string|null,
-  success: boolean|null,
-  param: string|null,
-}
+  code: string | null;
+  success: boolean | null;
+  param: string | null;
+};
 
 export type ResponseAuthUser = {
-  name: string,
-  allianceName: string,
-  allianceTicker: string,
-  roles: Array<string>,
-  csrfHeaderKey: string,
-  csrfToken: string,
-}
+  name: string;
+  allianceName: string;
+  allianceTicker: string;
+  roles: Array<string>;
+  csrfHeaderKey: string;
+  csrfToken: string;
+};
 
 export type ResponseGates = {
-  code: string|null,
-  ansiblexes: Array<Ansiblex>,
-}
+  code: string | null;
+  ansiblexes: Array<Ansiblex>;
+};
 
 export type ResponseSystems = {
-  systems: Array<System>,
-}
+  systems: Array<System>;
+};
 
 export type ResponseConnectedSystems = {
-  connections: Array<ConnectedSystems>,
-}
+  connections: Array<ConnectedSystems>;
+};
 
 export type ResponseMapConnections = {
-  code: string|null,
-  ansiblexes: Array<ConnectedSystems>,
-  temporary: Array<ConnectedSystems>,
-}
+  code: string | null;
+  ansiblexes: Array<ConnectedSystems>;
+  temporary: Array<ConnectedSystems>;
+};
 
 export type ResponseGatesUpdated = {
-  code: string|null,
-  allianceId: bigint|null,
-  updated: string|null, // yyyy-MM-dd'T'HH:mm:ss'Z'
-}
+  code: string | null;
+  allianceId: bigint | null;
+  updated: string | null; // yyyy-MM-dd'T'HH:mm:ss'Z'
+};
 
 export type ResponseTemporaryConnections = {
-  code: string|null,
-  temporaryConnections: Array<TemporaryConnection>,
-}
+  code: string | null;
+  temporaryConnections: Array<TemporaryConnection>;
+};
 
 export type ResponseSystemNames = {
-  systems: Array<string>,
-}
+  systems: Array<string>;
+};
 
 export type ResponseRouteFind = {
-  code: string|null,
-  routes: Array<Array<Waypoint>>,
-}
+  code: string | null;
+  routes: Array<Array<Waypoint>>;
+};
 
 export type ResponseRouteLocation = {
-  code: string|null,
-  solarSystemId: bigint|null,
-  solarSystemName: string|null,
-}
+  code: string | null;
+  solarSystemId: bigint | null;
+  solarSystemName: string | null;
+};
+
+// CapitalSystem описывает систему с координатами для капитального маршрута.
+export type CapitalSystem = {
+  id: number;
+  name: string;
+  x: number;
+  y: number;
+  z: number;
+};
+
+// ResponseCapital описывает ответ API /api/capital.
+export type ResponseCapital = {
+  route: Array<CapitalSystem>;
+};
 
 export type Ansiblex = {
-  id: number,
-  name: string,
-  source: AnsiblexSource|null,
-  regionName: string,
-}
+  id: number;
+  name: string;
+  source: AnsiblexSource | null;
+  regionName: string;
+};
 
 export type Waypoint = {
-  systemId: bigint,
-  systemName: string,
-  targetSystem: string,
-  wormhole: boolean,
-  systemSecurity: number,
-  connectionType: RouteType|null,
-  ansiblexId: number|null,
-  ansiblexName: string|null,
-  regionName: string,
-}
+  systemId: bigint;
+  systemName: string;
+  targetSystem: string;
+  wormhole: boolean;
+  systemSecurity: number;
+  connectionType: RouteType | null;
+  ansiblexId: number | null;
+  ansiblexName: string | null;
+  regionName: string;
+};
 
 export type TemporaryConnection = {
-  system1Id: bigint,
-  system1Name: string,
-  system2Id: bigint,
-  system2Name: string,
-  characterId: bigint,
-  created: string // yyyy-MM-dd'T'HH:mm:ss'Z'
-}
+  system1Id: bigint;
+  system1Name: string;
+  system2Id: bigint;
+  system2Name: string;
+  characterId: bigint;
+  created: string; // yyyy-MM-dd'T'HH:mm:ss'Z'
+};
 
 export type System = {
-  id: bigint,
-  name: string,
-}
+  id: bigint;
+  name: string;
+};
 
 export type ConnectedSystems = {
-  system1: string,
-  system2: string,
-}
+  system1: string;
+  system2: string;
+};
 
 export enum RouteType {
-  Stargate = 'Stargate',
-  Ansiblex = 'Ansiblex',
-  Temporary = 'Temporary',
+  Stargate = "Stargate",
+  Ansiblex = "Ansiblex",
+  Temporary = "Temporary",
 }
 
 export enum AnsiblexSource {
-  Import = 'Import',
-  ESI = 'ESI',
+  Import = "Import",
+  ESI = "ESI",
 }

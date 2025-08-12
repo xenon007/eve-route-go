@@ -57,8 +57,7 @@
     "write-route": "Write Route",
     "write-route-description": "Set route in the game, requires esi-ui.write_waypoint.v1.",
     "read-location": "Read Location",
-    "read-location-description":
-      "Set the start system to your current location, requires esi-location.read_location.v1.",
+    "read-location-description": "Set the start system to your current location, requires esi-location.read_location.v1.",
     "update-gates": "Update Gates",
     "update-gates-description": [
       "Update Ansiblex jump gates for your alliance from ESI, requires ",
@@ -80,14 +79,20 @@
     "start": "Start system",
     "end": "End system",
     "find": "Find jumps",
-    "no-route": "No route found."
+    "no-route": "No route found.",
+    "validation-required": "Start and end system are required.",
+    "validation-same": "Start and end must be different.",
+    "system": "System",
+    "distance": "Distance (ly)",
+    "fuel": "Fuel",
+    "total-fuel": "Total fuel"
   },
   "navModal": {
     "esi-update": "ESI Update",
     "add-connection": "Add Connection",
     "how-it-works": "How it works"
   },
-  "addConnection":  {
+  "addConnection": {
     "from": "From",
     "to": "To",
     "choose-systems": [

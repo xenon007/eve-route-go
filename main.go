@@ -12,33 +12,31 @@ import (
 	"github.com/gorilla/mux"
 	"golang.org/x/oauth2"
 
-	"github.com/tkhamez/eve-route-go/internal/auth"
 	"github.com/tkhamez/eve-route-go/internal/api"
-	"github.com/tkhamez/eve-route-go/internal/capital"
-	routepkg "github.com/tkhamez/eve-route-go/internal/route"
 	"github.com/tkhamez/eve-route-go/internal/auth"
 	"github.com/tkhamez/eve-route-go/internal/capital"
-	"github.com/tkhamez/eve-route-go/internal/db"
 	"github.com/tkhamez/eve-route-go/internal/config"
+	dbstore "github.com/tkhamez/eve-route-go/internal/dbstore"
+	routepkg "github.com/tkhamez/eve-route-go/internal/route"
 )
 
 //go:embed frontend/dist
 var frontendFS embed.FS
 
 func main() {
-  
+
 	cfg := config.FromEnv()
 	if cfg.DatabaseURL == "" {
 		log.Println("DATABASE_URL is not set")
 	}
-  
-  
-	db, err := sql.Open("sqlite", "tokens.db")
+
+	sqlDB, err := sql.Open("sqlite", cfg.DatabaseURL)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
-	store, err := auth.NewTokenStore(db)
+	defer sqlDB.Close()
+
+	tokenStore, err := auth.NewTokenStore(sqlDB)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -52,7 +50,7 @@ func main() {
 			TokenURL: "https://login.eveonline.com/v2/oauth/token",
 		},
 	}
-  h := auth.NewHandler(conf, store)
+	h := auth.NewHandler(conf, tokenStore)
 
 	r := mux.NewRouter()
 	r.HandleFunc("/login", h.Login).Methods("GET")
@@ -64,8 +62,8 @@ func main() {
 	_ = auth.NewManager()
 
 	// API endpoint for capital jump planner
-	store := db.NewMemory(nil, nil, capital.DefaultSystems())
-	p, err := capital.NewPlanner(store, 5)
+	capStore := dbstore.NewMemory(nil, nil, capital.DefaultSystems())
+	p, err := capital.NewPlanner(capStore, 5)
 	if err != nil {
 		log.Fatalf("cannot create planner: %v", err)
 	}
@@ -87,7 +85,10 @@ func main() {
 	}).Methods("GET")
 
 	// API endpoint for route planner
-	rp := routepkg.NewRoute(nil, nil, nil, nil)
+	rp, err := routepkg.NewRoute(capStore, nil, nil)
+	if err != nil {
+		log.Fatalf("cannot create route planner: %v", err)
+	}
 	r.HandleFunc("/api/route/{from}/{to}", api.NewRouteHandler(rp)).Methods("GET")
 
 	// serve static frontend
@@ -96,9 +97,7 @@ func main() {
 	csrfKey := os.Getenv("CSRF_KEY")
 	csrfMiddleware := csrf.Protect([]byte(csrfKey), csrf.Secure(false))
 
-	log.Println("server started on :8080")
-	log.Fatal(http.ListenAndServe(":8080", csrfMiddleware(r)))
 	addr := ":" + cfg.Port
 	log.Printf("server started on %s", addr)
-	log.Fatal(http.ListenAndServe(addr, r))
+	log.Fatal(http.ListenAndServe(addr, csrfMiddleware(r)))
 }

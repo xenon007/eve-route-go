@@ -7,11 +7,16 @@ import (
 	"testing"
 
 	"github.com/gorilla/mux"
+	dbstore "github.com/tkhamez/eve-route-go/internal/dbstore"
 	routepkg "github.com/tkhamez/eve-route-go/internal/route"
 )
 
 func TestNewRouteHandler(t *testing.T) {
-	planner := routepkg.NewRoute(nil, nil, nil, nil)
+	store := dbstore.NewMemory(nil, nil, nil)
+	planner, err := routepkg.NewRoute(store, nil, nil)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
 	router := mux.NewRouter()
 	router.HandleFunc("/api/route/{from}/{to}", NewRouteHandler(planner)).Methods("GET")
 
@@ -42,7 +47,11 @@ func TestNewRouteHandler(t *testing.T) {
 }
 
 func TestNewRouteHandlerNotFound(t *testing.T) {
-	planner := routepkg.NewRoute(nil, nil, nil, nil)
+	store := dbstore.NewMemory(nil, nil, nil)
+	planner, err := routepkg.NewRoute(store, nil, nil)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
 	router := mux.NewRouter()
 	router.HandleFunc("/api/route/{from}/{to}", NewRouteHandler(planner)).Methods("GET")
 

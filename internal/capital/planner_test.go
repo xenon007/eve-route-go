@@ -4,12 +4,12 @@ import (
 	"math"
 	"testing"
 
-	"github.com/tkhamez/eve-route-go/internal/db"
+	dbstore "github.com/tkhamez/eve-route-go/internal/dbstore"
 )
 
 func TestPlan(t *testing.T) {
 	systems := DefaultSystems()
-	store := db.NewMemory(nil, nil, systems)
+	store := dbstore.NewMemory(nil, nil, systems)
 	p, err := NewPlanner(store, 5)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -25,7 +25,7 @@ func TestPlan(t *testing.T) {
 
 func TestPathDistance(t *testing.T) {
 	systems := DefaultSystems()
-	store := db.NewMemory(nil, nil, systems)
+	store := dbstore.NewMemory(nil, nil, systems)
 	p, err := NewPlanner(store, 5)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)

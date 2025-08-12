@@ -7,14 +7,14 @@ import (
 	"log"
 	"math"
 
-	"github.com/tkhamez/eve-route-go/internal/db"
+	dbstore "github.com/tkhamez/eve-route-go/internal/dbstore"
 )
 
 // lyInMeters — количество метров в одном световом годе.
 const lyInMeters = 9.4607e15
 
 // System описывает солнечную систему для капитального маршрута.
-type System = db.System
+type System = dbstore.System
 
 // Planner рассчитывает маршрут прыжков капитальных кораблей.
 // Для поиска используется BFS, соседи вычисляются по радиусу прыжка.
@@ -25,7 +25,7 @@ type Planner struct {
 }
 
 // NewPlanner создаёт новый планировщик, загружая данные из хранилища.
-func NewPlanner(store db.Store, jumpRange float64) (*Planner, error) {
+func NewPlanner(store dbstore.Store, jumpRange float64) (*Planner, error) {
 	systems, err := store.Systems(context.Background())
 	if err != nil {
 		return nil, err

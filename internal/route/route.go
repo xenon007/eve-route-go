@@ -5,7 +5,7 @@ import (
 	"log"
 	"sort"
 
-	"github.com/tkhamez/eve-route-go/internal/db"
+	dbstore "github.com/tkhamez/eve-route-go/internal/dbstore"
 	"github.com/tkhamez/eve-route-go/internal/graph"
 )
 
@@ -22,7 +22,7 @@ type Route struct {
 }
 
 // NewRoute создаёт новый экземпляр маршрутизатора и загружает данные из хранилища.
-func NewRoute(store db.Store, avoided map[int]bool, removed []ConnectedSystems) (*Route, error) {
+func NewRoute(store dbstore.Store, avoided map[int]bool, removed []ConnectedSystems) (*Route, error) {
 	g := graph.DefaultGraph()
 	helper := graph.NewHelper(g)
 	r := &Route{

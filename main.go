@@ -56,6 +56,8 @@ func main() {
 	r.HandleFunc("/login", h.Login).Methods("GET")
 	r.HandleFunc("/callback", h.Callback).Methods("GET")
 
+	api.RegisterAnsiblexRoutes(r, "secret")
+
 	// API endpoint for capital jump planner
 	store := db.NewMemory(nil, nil, capital.DefaultSystems())
 	p, err := capital.NewPlanner(store, 5)

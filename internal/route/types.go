@@ -1,15 +1,15 @@
 package route
 
 import (
-	"github.com/tkhamez/eve-route-go/internal/db"
+	dbstore "github.com/tkhamez/eve-route-go/internal/dbstore"
 	"github.com/tkhamez/eve-route-go/internal/graph"
 )
 
 // Ansiblex описывает Ansiblex-ворота.
-type Ansiblex = db.Ansiblex
+type Ansiblex = dbstore.Ansiblex
 
 // TemporaryConnection описывает временное соединение между системами.
-type TemporaryConnection = db.TemporaryConnection
+type TemporaryConnection = dbstore.TemporaryConnection
 
 // ConnectedSystems — пара систем, связь между которыми удалена пользователем.
 type ConnectedSystems struct {

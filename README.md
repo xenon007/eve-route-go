@@ -44,3 +44,4 @@ go build -o eve-route
 | `SESSION_KEY`        | ключ для cookie-сессий                         | `-`                         |
 
 Если `DATABASE_URL` не задан, используется встроенное в память хранилище.
+

@@ -3,6 +3,7 @@ package auth
 import (
 	"log"
 	"net/http"
+	"strconv"
 
 	"golang.org/x/oauth2"
 )
@@ -42,6 +43,30 @@ func (h *Handler) Callback(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "save failed", http.StatusInternalServerError)
 		return
 	}
+	if _, err := h.Store.Load(1); err != nil {
+		log.Println("token load failed:", err)
+	}
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write([]byte("ok"))
+}
+
+// Logout removes the token for the given user id.
+func (h *Handler) Logout(w http.ResponseWriter, r *http.Request) {
+	idStr := r.URL.Query().Get("id")
+	if idStr == "" {
+		http.Error(w, "missing id", http.StatusBadRequest)
+		return
+	}
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "invalid id", http.StatusBadRequest)
+		return
+	}
+	if err := h.Store.Delete(id); err != nil {
+		log.Println("token delete failed:", err)
+		http.Error(w, "delete failed", http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write([]byte("logged out"))
 }

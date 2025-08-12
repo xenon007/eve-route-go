@@ -3,16 +3,16 @@ package route
 import (
 	"testing"
 
-	"github.com/tkhamez/eve-route-go/internal/db"
+	dbstore "github.com/tkhamez/eve-route-go/internal/dbstore"
 )
 
 // TestRouteFindAnsiblex проверяет, что Ansiblex рассматривается как альтернативный маршрут.
 func TestRouteFindAnsiblex(t *testing.T) {
-	ansiblexes := []db.Ansiblex{
+	ansiblexes := []dbstore.Ansiblex{
 		{ID: 1, Name: "Alpha » Gamma - Gate1", SolarSystemID: 1},
 		{ID: 2, Name: "Gamma » Alpha - Gate2", SolarSystemID: 3},
 	}
-	store := db.NewMemory(ansiblexes, nil, nil)
+	store := dbstore.NewMemory(ansiblexes, nil, nil)
 	r, err := NewRoute(store, nil, nil)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -32,12 +32,11 @@ func TestRouteFindAnsiblex(t *testing.T) {
 
 // TestRouteSortTemporary проверяет сортировку по количеству временных соединений.
 func TestRouteSortTemporary(t *testing.T) {
-	temps := []db.TemporaryConnection{
+	temps := []dbstore.TemporaryConnection{
 		{System1ID: 1, System2ID: 3},
 	}
-	removed := []ConnectedSystems{{System1: "Alpha", System2: "Gamma"}}
-	store := db.NewMemory(nil, temps, nil)
-	r, err := NewRoute(store, nil, removed)
+	store := dbstore.NewMemory(nil, temps, nil)
+	r, err := NewRoute(store, nil, nil)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}

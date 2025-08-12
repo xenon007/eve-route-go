@@ -17,6 +17,7 @@
     "validation-required": "Start and end system are required.",
     "validation-same": "Start and end must be different.",
     "system": "System",
+    "region": "Region",
     "distance": "Distance (ly)",
     "fuel": "Fuel",
     "total-fuel": "Total fuel"

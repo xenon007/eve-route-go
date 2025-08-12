@@ -8,6 +8,7 @@ import (
 
 	"github.com/gorilla/mux"
 
+	"github.com/tkhamez/eve-route-go/internal/api"
 	"github.com/tkhamez/eve-route-go/internal/capital"
 )
 
@@ -16,6 +17,8 @@ var frontendFS embed.FS
 
 func main() {
 	r := mux.NewRouter()
+
+	api.RegisterAnsiblexRoutes(r, "secret")
 
 	// API endpoint for capital jump planner
 	p := capital.NewPlanner(capital.DefaultSystems(), 5)
